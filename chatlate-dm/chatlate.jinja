@@ -99,6 +99,17 @@ resources:
     - entity: allUsers
       role: READER
 
+{% for service_name in ['cloudbuild', 'iam', 'sourcerepo', 'spanner',
+                        'translate'] %}
+
+- name: {{ NAME }}-enable-{{ service_name }}
+  type: deploymentmanager.v2.virtual.enableService
+  properties:
+    consumerId: 'project:{{ PROJECT }}'
+    serviceName: {{ service_name }}.googleapis.com
+
+{% endfor %}
+
 - name: {{ NAME }}-gke-cluster
   type: container.v1.cluster
   properties:
@@ -248,6 +259,9 @@ resources:
 
 - name: chatlate-spanner
   type: gcp-types/spanner-v1:projects.instances
+  metadata:
+    dependsOn:
+    - {{ NAME }}-enable-spanner
   properties:
     parent: projects/{{ PROJECT }}
     instanceId: chatlate-spanner
@@ -255,6 +269,9 @@ resources:
       config: projects/{{ PROJECT }}/instanceConfigs/regional-{{ REGION }}
       displayName: Chatlate Spanner Instance
       nodeCount: 1
+
+
+
 
 - name: chatlate
   type: gcp-types/spanner-v1:projects.instances.databases

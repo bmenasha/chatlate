@@ -43,8 +43,6 @@ bash /tmp/InstallHalyard.sh -y --user $HAL_USER
 
 echo "Configuring Halyard"
 SA_EMAIL=$(gcloud info --format='value(config.account)')
-gcloud services enable servicemanagement.googleapis.com -q || true
-gcloud services enable iam.googleapis.com -q || true
 gcloud iam service-accounts keys create $SERVICE_ACCOUNT_DEST  --iam-account $SA_EMAIL
 chown $HAL_USER $SERVICE_ACCOUNT_DEST
 

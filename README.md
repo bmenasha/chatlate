@@ -3,7 +3,7 @@
 _... yet another Google chat application._
 
 
-This is a basic example of a micro service architecture, leveraging Google Cloud technologies. 
+This is a basic example of a micro service architecture, leveraging Google Cloud technologies.
 Please be aware that this is a Proof of Concept, and therefore not secured or optimized appropriately for production use.
 
 ## What's provided?
@@ -11,7 +11,7 @@ Several resources are created automatically in order to facilitate the capstone 
 
 * A chat application composed of two microservices. One microservice to handle message delivery, and another microservice to handle translating messages.
 * A fully built front end application, which allows to interactively test the back end. The front end application is accessible from a Google Cloud Storage bucket (acting as a CDN).
-* A fully set up CI/CD pipeline using GCP’s build triggers and Spinnaker. 
+* A fully set up CI/CD pipeline using GCP’s build triggers and Spinnaker.
 *Cloud Endpoints to provide API management for the two microservices.
 * Load testing infrastructure (using Locust), including a script to put load on the chat microservice.
 
@@ -30,6 +30,7 @@ To deploy the Chatlate application and related CI/CD infrastructure:
 * Checkout the the current Git repository to your local machine (or alternatively to your GCP cloud instance).
 * Select the proper project where you want to deploy. **It is recommended to deploy the application in a separate project, to make clean up easier.**
 * Go inside of the directory holding the Deployment Manager scripts: `cd chatlate-dm`.
+* Enable the servicemanagement API:  `gcloud services enable servicemanagement.googleapis.com`
 * Deploy the infrastructure:  `gcloud deployment-manager deployments create chatlate --config chatlate_config.yaml`
 * Wait for the deployment manager process to finish.
 
@@ -44,8 +45,8 @@ Then monitor the output of the automated startup script:
 
 
     sudo tail -f /var/log/syslog
- 
-The automated startup script will print a last message once it has finished executing: 
+
+The automated startup script will print a last message once it has finished executing:
 
 
     Nov  1 16:03:11 asl-vm startup-script: INFO Finished running startup scripts.
@@ -60,7 +61,7 @@ After the automated startup scripts have run, one last script must be manually r
 
 ### Spinnaker (Continuous Delivery tool)
 
-Spinnaker provides the Continuous Delivery (CD) functionality of the pipeline. Spinnaker is configured to automatically deploy any new artifacts. However since spinnaker compares the signatures of container images to determine if it should trigger a new deployment, the first deployment will have to be triggered manually. 
+Spinnaker provides the Continuous Delivery (CD) functionality of the pipeline. Spinnaker is configured to automatically deploy any new artifacts. However since spinnaker compares the signatures of container images to determine if it should trigger a new deployment, the first deployment will have to be triggered manually.
 
 The IP of the Spinnaker user interface, as well as the username and password are provided in the output section. This should be user-1/bluehexagons  with the IP of the spinnaker-vm on port 9000:
 
@@ -150,7 +151,7 @@ Changes can be committed with the usual git commands:
 
 git add .
 git commit -m "Adding code"
-git push origin master 
+git push origin master
 
 After the changes are pushed to the Google Cloud Source Repository, the changes will be automatically built and deployed to the GKE cluster.
 
@@ -158,7 +159,7 @@ While you can use other branches, keep in mind that the CI/CD pipeline is config
 
 ## Clean up
 
-Keep in mind that the resources deployed by the Deployment Manager scripts will incur billing. 
+Keep in mind that the resources deployed by the Deployment Manager scripts will incur billing.
 Therefore it's important to delete them once done.
 
 ### Deleting the project (easiest option)
@@ -166,7 +167,7 @@ Therefore it's important to delete them once done.
 If you have created a dedicated project to play with the Chatlate application (as recommended at the top), deleting the project is the easiest way to remove all of the resources
 
     gcloud projects delete my_test_project
-    
+
 ### Deleting individual resources
 
 If you want to remove the individual resources you will have to follow some manual steps.
@@ -176,8 +177,8 @@ If you want to remove the individual resources you will have to follow some manu
 Deployment Manager will not delete GCS buckets that have data in them. You will have to delete them manually:
 
     gsutil rm -r gs://name-spinnaker-number
-    gsutil rm -r gs://name-application-number 
-    
+    gsutil rm -r gs://name-application-number
+
 Where `name` is the deployment name and `number` is the project number.
 
 #### Remove Firewall rules
@@ -186,20 +187,20 @@ Spinnaker will create firewall rules for the application. You can go into the Sp
 
 Alternately you can delete the firewall rules directly. You can list all of the existing rules by running:
 
-    gcloud compute firewall-rules list 
-     
-     
+    gcloud compute firewall-rules list
+
+
  Rules can be deleted using:
- 
+
      gcloud compute firewall-rules delete rulename
-     
+
  Be careful to not delete more than necessary.
- 
- 
+
+
  #### Use Deployment Manager
- 
+
  You can use Deployment Manager to finish cleaning up the resources:
- 
+
      gcloud deployment-manager deployments delete chatlate
-     
+
   Replace `chatlate` with the deployment name if you choose another name when deploying the resources.
